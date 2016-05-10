@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <b>Docker</b> container used assume temporary AWS session credentials.
+  <b>Docker</b> container used to assume temporary AWS credentials for a specific <b>role</b>.
 </p>
 
 ### Notes
