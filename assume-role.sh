@@ -16,7 +16,7 @@ fi
 # Input variables
 # ---
 
-AWS_ENV="$4"
+export AWS_ENV="$4"
 
 # ---
 # Final variables
@@ -61,29 +61,48 @@ ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROL
 if [ $? -eq 0 ]
 then
   # ---
-  # Get variables from .temp_credentials file
+  # Export env vars that are used in new shell 
   # ---
 
-  ACCESS_KEY=$(cat ${TMP_FILE} | jq -r ".Credentials.AccessKeyId")
-  SECRET_KEY=$(cat ${TMP_FILE} | jq -r ".Credentials.SecretAccessKey")
-  SESSION_TOKEN=$(cat ${TMP_FILE} | jq -r ".Credentials.SessionToken")
+  export AWS_ACCESS_KEY_ID=$(cat ${TMP_FILE} | jq -r ".Credentials.AccessKeyId")
+  export TF_VAR_access_key=$AWS_ACCESS_KEY_ID
+  export AWS_SECRET_ACCESS_KEY=$(cat ${TMP_FILE} | jq -r ".Credentials.SecretAccessKey")
+  export TF_VAR_secret_key=$AWS_SECRET_ACCESS_KEY
+  export AWS_SESSION_TOKEN=$(cat ${TMP_FILE} | jq -r ".Credentials.SessionToken")
+  export TF_VAR_session_token=$AWS_SESSION_TOKEN
+  export AWS_REGION=eu-west-1
+  export TF_VAR_region=$AWS_REGION
+
   EXPIRATION=$(cat ${TMP_FILE} | jq -r ".Credentials.Expiration")
+  export AWS_EXPIRATION=$(ruby -e "require 'time'; puts Time.parse('$EXPIRATION').localtime")
+  export TERRAFORM_STATE_BUCKET="terraform-state.$AWS_ENV.vidsy.co"
+
+  export ROLE_ID=$ROLE_ID
 
   # ---
   # Delete .temp_credentials file
   # ---
 
-  rm .temp_credentials
+  rm -rf .temp_credentials
 
   # ---
-  # Print summary
+  # Change prompt colour based on environment
   # ---
 
-  cat <<Output
-  export TF_VAR_access_key="$ACCESS_KEY"
-  export TF_VAR_secret_key="$SECRET_KEY"
-  export TF_VAR_session_token="$SESSION_TOKEN"
-Output
+  if [ "$AWS_ENV" == "staging" ]
+  then
+    export ENV_COLOUR="\[\e[1;32m\]"
+  else
+    export ENV_COLOUR="\[\e[1;31m\]"
+  fi
+
+  # ---
+  # Create new shell with env vars exported
+  # ---
+
+  echo "export PS1=\"\$ENV_COLOUR\$AWS_ENV (\$ROLE_ID) \[\e[0m\]\$DIRECTORY\n> \"" >> ~/.profile.assume
+  echo ". ~/.profile" >> ~/.profile.assume
+  /bin/bash --rcfile ~/.profile.assume
 else
   echo "There was a problem assuming the role: $ASSUMED_ROLE_OUTPUT"
   exit 1
