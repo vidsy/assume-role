@@ -100,8 +100,9 @@ then
   # Create new shell with env vars exported
   # ---
 
-  echo "export PS1=\"\$ENV_COLOUR\$AWS_ENV (\$ROLE_ID) \[\e[0m\]\$DIRECTORY\n> \"" >> ~/.profile.assume
+  echo "export PS1=\"\n\$ENV_COLOUR\$AWS_ENV (\$ROLE_ID) \[\e[0m\]\$DIRECTORY\n> \"" >> ~/.profile.assume
   echo ". ~/.profile" >> ~/.profile.assume
+  echo "alias t=\"terraform\"" >> ~/.profile.assume
   /bin/bash --rcfile ~/.profile.assume
 else
   echo "There was a problem assuming the role: $ASSUMED_ROLE_OUTPUT"
