@@ -78,6 +78,7 @@ then
   export TERRAFORM_STATE_BUCKET="terraform-state.$AWS_ENV.vidsy.co"
 
   export ROLE_ID=$ROLE_ID
+  export DIRECTORY="${PWD##*/}"
 
   # ---
   # Delete .temp_credentials file
