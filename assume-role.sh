@@ -61,7 +61,7 @@ then
 
   EXPIRATION=$(cat ${TMP_FILE} | jq -r ".Credentials.Expiration")
   export AWS_EXPIRATION=$(ruby -e "require 'time'; puts Time.parse('$EXPIRATION').localtime")
-  export TERRAFORM_STATE_BUCKET="terraform-state.$AWS_ENV.vidsy.co"
+  export TERRAFORM_STATE_BUCKET=$TERRAFORM_STATE_BUCKET
 
   export ROLE_NAME=$ROLE_NAME
   export DIRECTORY=$DIRECTORY
