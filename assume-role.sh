@@ -1,62 +1,48 @@
 #!/bin/bash
 
-USAGE="assume-role <staging_account_id> <prod_account_id> <role_prefix> <staging|live>"
+USAGE="assume-role <account_id> <role_name> <staging|live> <profile>"
 
 # ---
 # Check for correct arguments
 # ---
 
-if [ "$#" -ne 4 ]; then
+if [ "$#" -lt 3 ]; then
   echo "Illegal number of parameters"
   echo "Usage: $USAGE"
   exit 1
 fi
 
 # ---
-# Input variables
-# ---
-
-export AWS_ENV="$4"
-
-# ---
 # Final variables
 # ---
 
-STAGING_ACCOUNT=$1
-LIVE_ACCOUNT=$2
-RAND_STRING=$3
+export ACCOUNT_ID=$1
+export ROLE_NAME=$2
+export AWS_ENV="$3"
+export PROFILE="--profile default"
 
 # ---
-# Set account ID depending on environment
+# Set profile if exists
 # ---
+#
 
-if [ "${AWS_ENV}" = "staging" ]; then
-  ACCOUNT_ID="${STAGING_ACCOUNT}"
+if [ "$4" != "" ]; then
+  export PROFILE="--profile $4"
 fi
-
-if [ "${AWS_ENV}" = "live" ]; then
-  ACCOUNT_ID="${LIVE_ACCOUNT}"
-fi
-
-# ---
-# Create role ID
-# ---
-
-ROLE_ID="${AWS_ENV}_admin_${RAND_STRING}"
 
 # ---
 # Create variables for temporary credentials
 # ---
 
-ASSUME_ROLE="arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_ID}"
-ROLE_SESSION_NAME="temp-${ACCOUNT}-${ROLE}-session"
+ASSUME_ROLE="arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME}"
+ROLE_SESSION_NAME="temp-${AWS_ENV}-${ROLE_NAME}-session"
 TMP_FILE=".temp_credentials"
 
 # ---
 # Run assume-role CLI command
 # ---
 
-ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROLE} --role-session-name ${ROLE_SESSION_NAME} > ${TMP_FILE}) 2>&1)
+ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROLE} --role-session-name ${ROLE_SESSION_NAME} $PROFILE > ${TMP_FILE}) 2>&1)
 
 if [ $? -eq 0 ]
 then
@@ -77,8 +63,8 @@ then
   export AWS_EXPIRATION=$(ruby -e "require 'time'; puts Time.parse('$EXPIRATION').localtime")
   export TERRAFORM_STATE_BUCKET="terraform-state.$AWS_ENV.vidsy.co"
 
-  export ROLE_ID=$ROLE_ID
-  export DIRECTORY="${PWD##*/}"
+  export ROLE_NAME=$ROLE_NAME
+  export DIRECTORY=$DIRECTORY
 
   # ---
   # Delete .temp_credentials file
@@ -101,7 +87,7 @@ then
   # Create new shell with env vars exported
   # ---
 
-  echo "export PS1=\"\n\$ENV_COLOUR\$AWS_ENV (\$ROLE_ID) \[\e[0m\]\$DIRECTORY\n> \"" >> ~/.profile.assume
+  echo "export PS1=\"\n\$ENV_COLOUR\$AWS_ENV (\$ROLE_NAME) \[\e[0m\]\$DIRECTORY\n> \"" >> ~/.profile.assume
   echo ". ~/.profile" >> ~/.profile.assume
   echo "alias t=\"terraform\"" >> ~/.profile.assume
   /bin/bash --rcfile ~/.profile.assume
