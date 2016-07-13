@@ -17,10 +17,13 @@ plan|apply|destroy)
     fi
   fi
 
-  STATE_FILE=$DIRECTORY
 
-  if [ -f .terraform_config ]; then
-    STATE_FILE=$(cat .terraform_config | jq -r ".remote.key")
+  if [ -z "$STATE_FILE" ]; then
+    STATE_FILE=$DIRECTORY
+
+    if [ -f .terraform_config ]; then
+      STATE_FILE=$(cat .terraform_config | jq -r ".remote.key")
+    fi
   fi
 
   rm -rf .terraform/terraform.tfstate*
