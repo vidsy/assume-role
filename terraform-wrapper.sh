@@ -8,10 +8,13 @@ fi
 
 case $1 in
 plan|apply|destroy)
-  VAR_FILE="-var-file=$AWS_ENV.tfvars"
 
-  if [ ! -f $AWS_ENV.tfvars ]; then
-    VAR_FILE=""
+  if [ -z "$VAR_FILE" ]; then
+    VAR_FILE="-var-file=$AWS_ENV.tfvars"
+
+    if [ ! -f $AWS_ENV.tfvars ]; then
+      VAR_FILE=""
+    fi
   fi
 
   STATE_FILE=$DIRECTORY
