@@ -1,5 +1,5 @@
 FROM python:slim
-MAINTAINER Steven Jack <smaj@vidsy.co>
+MAINTAINER Steven Jack <steve@vidsy.co>
 
 ENV AWS_CLI_VERSION 1.10.19
 ENV TF_VERSION 0.7.13
