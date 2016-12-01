@@ -1,8 +1,8 @@
 FROM python:slim
-MAINTAINER Steven Jack <smaj@vidsy.co>
+MAINTAINER Steven Jack <steve@vidsy.co>
 
 ENV AWS_CLI_VERSION 1.10.19
-ENV TF_VERSION 0.7.9
+ENV TF_VERSION 0.7.13
 ENV AWS_SDK_VERSION 2
 
 RUN pip install awscli==${AWS_CLI_VERSION}
