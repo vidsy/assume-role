@@ -4,8 +4,11 @@ REPONAME ?= "assume-role"
 
 DEFAULT: run
 
-build:
+build-image:
 	@docker build -t vidsyhq/${REPONAME} .
+
+build-image-local:
+	@docker build -t vidsyhq/${REPONAME}:local .
 
 deploy:
 	@docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USER} -p ${DOCKER_PASS}
