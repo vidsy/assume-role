@@ -19,7 +19,7 @@ plan|apply|destroy)
 
 
   if [ -z "$STATE_FILE" ]; then
-    STATE_FILE=$DIRECTORY
+    STATE_FILE="${PWD##*/}"
 
     if [ -f .terraform_config ]; then
       STATE_FILE=$(cat .terraform_config | jq -r ".remote.key")
