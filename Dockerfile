@@ -1,7 +1,7 @@
 FROM python:slim
 MAINTAINER Steven Jack <steve@vidsy.co>
 
-ENV AWS_CLI_VERSION 1.10.19
+ENV AWS_CLI_VERSION 1.11.41
 ENV TF_VERSION 0.7.13
 ENV AWS_SDK_VERSION 2
 
@@ -23,8 +23,5 @@ ADD assume-role.sh /usr/local/bin/assume-role
 RUN chmod u+x /usr/local/bin/assume-role
 ADD terraform-wrapper.sh /usr/local/bin/terraform
 RUN chmod u+x /usr/local/bin/terraform
-
-RUN mkdir /cwd
-WORKDIR /cwd
 
 ENTRYPOINT ["assume-role"]

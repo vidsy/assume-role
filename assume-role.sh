@@ -54,7 +54,7 @@ ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROL
 if [ $? -eq 0 ]
 then
   # ---
-  # Export env vars that are used in new shell 
+  # Export env vars that are used in new shell
   # ---
 
   export AWS_ACCESS_KEY_ID=$(cat ${TMP_FILE} | jq -r ".Credentials.AccessKeyId")
@@ -94,7 +94,7 @@ then
   # Create new shell with env vars exported
   # ---
 
-  echo "export PS1=\"\n\$ENV_COLOUR\$AWS_ENV (\$ROLE_NAME) \[\e[0m\]\$DIRECTORY\n> \"" >> ~/.profile.assume
+  echo "export PS1=\"\n\$ENV_COLOUR\$AWS_ENV (\$ROLE_NAME) \[\e[0m\]\W\n> \"" >> ~/.profile.assume
   echo ". ~/.profile" >> ~/.profile.assume
   echo "alias t=\"terraform\"" >> ~/.profile.assume
   /bin/bash --rcfile ~/.profile.assume
