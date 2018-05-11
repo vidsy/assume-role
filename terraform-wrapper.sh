@@ -27,7 +27,7 @@ plan|apply|destroy|refresh)
   fi
 
   rm -rf .terraform/terraform.tfstate*
-  terraform init -backend=true -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="key=$STATE_FILE.tfstate" -backend-config="region=$AWS_REGION"
+  terraform init -backend=true -backend-config="bucket=$TERRAFORM_STATE_BUCKET" -backend-config="region=$AWS_REGION"
   terraform.real $@ $VAR_FILE
   ;;
 *)
