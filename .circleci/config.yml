@@ -24,7 +24,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: apk update && apk add make
-      - run: make deploy -e DOCKER_EMAIL=$DOCKER_EMAIL -e DOCKER_USER=$DOCKER_USER -e DOCKER_PASS=$DOCKER_PASS -e CIRCLE_TAG=$CIRCLE_TAG
+      - run: make deploy -e CIRCLE_TAG=$CIRCLE_TAG
 
 workflows:
   version: 2
@@ -33,6 +33,7 @@ workflows:
       - build-image
       - check-version
       - deploy:
+          context: org-dockerhub
           filters:
             branches:
               only:
