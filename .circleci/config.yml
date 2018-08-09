@@ -33,7 +33,7 @@ workflows:
       - build-image
       - check-version
       - deploy:
-          context: org-dockerhub
+          context: org-docker-hub
           filters:
             branches:
               only:
