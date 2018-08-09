@@ -24,6 +24,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: apk update && apk add make
+      - run: make build-image
       - run: make deploy -e CIRCLE_TAG=$CIRCLE_TAG
 
 workflows:
@@ -38,3 +39,6 @@ workflows:
             branches:
               only:
                 - master
+            tags:
+              only:
+                - /[0-9]+\.[0-9]+\.[0-9]+/
