@@ -11,7 +11,7 @@ jobs:
 
   check-version:
     docker:
-      - image: alpine:latest
+      - image: vidsyhq/alpine:latest
     steps:
       - checkout
       - run: apk update && apk add make git
