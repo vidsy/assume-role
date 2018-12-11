@@ -9,8 +9,7 @@ ENV DOCKER_VERSION 18.03.1-ce
 RUN pip install awscli==${AWS_CLI_VERSION}
 
 RUN apt-get update
-RUN apt-get install -y jq zip curl ruby
-RUN apt-get install make
+RUN apt-get install -y jq zip curl ruby make
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
