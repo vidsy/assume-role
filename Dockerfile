@@ -1,17 +1,20 @@
 FROM python:slim
 MAINTAINER Steven Jack <steve@vidsy.co>
 
-ENV AWS_CLI_VERSION 1.17.1
-ENV TF_VERSION 0.12.20
+ENV AWS_CLI_VERSION 1.18.132
+ENV TF_VERSION 0.12.29
 ENV AWS_SDK_VERSION 2
 ENV DOCKER_VERSION 18.03.1-ce
 
 RUN pip install awscli==${AWS_CLI_VERSION}
 
 RUN apt-get update
-RUN apt-get install -y jq zip curl ruby make
+RUN apt-get install -y zip curl ruby make
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN curl -L -o /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+RUN chmod u+x /usr/local/bin/jq
 
 RUN curl -L -o /terraform.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
 RUN unzip -d /usr/local/bin /terraform.zip
