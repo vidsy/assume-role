@@ -1,40 +1,25 @@
-version: 2
-jobs:
-  build-image:
-    docker:
-      - image: docker:18.05.0-ce-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: apk update && apk add make
-      - run:  make build-image
+version: 2.1
 
-  check-version:
-    docker:
-      - image: vidsyhq/alpine:latest
-    steps:
-      - checkout
-      - run: apk update && apk add make git
-      - run: make check-version
+orbs:
+  common: vidsy/common@volatile
+  docker: vidsy/docker@volatile
+  go: vidsy/go@volatile
 
-  deploy:
-    docker:
-      - image: docker:18.05.0-ce-git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: apk update && apk add make
-      - run: make build-image
-      - run: make deploy -e CIRCLE_TAG=$CIRCLE_TAG
+ignore-master: &ignore-master
+  filters:
+    branches:
+      ignore: master
 
 workflows:
-  version: 2
   commit:
     jobs:
-      - build-image
-      - check-version
-      - deploy:
+      - common/check-version:
+          <<: *ignore-master
+      - docker/build:
+          <<: *ignore-master
+      - go/deploy:
           context: org-docker-hub
+          deploy-to-ecr: false
           filters:
             branches:
               only:
