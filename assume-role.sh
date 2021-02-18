@@ -19,7 +19,7 @@ fi
 export ACCOUNT_ID=$1
 export ROLE_NAME=$2
 export AWS_ENV="$3"
-export PROFILE="--profile default"
+export PROFILE="default"
 
 # ---
 # Set profile if exists
@@ -27,7 +27,7 @@ export PROFILE="--profile default"
 #
 
 if [ "$4" != "" ]; then
-  export PROFILE="--profile $4"
+  export PROFILE="$4"
 fi
 
 # ---
@@ -35,12 +35,12 @@ fi
 # ---
 
 ASSUME_ROLE="arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME}"
-ROLE_SESSION_NAME="temp-${AWS_ENV}-${ROLE_NAME}-session"
+ROLE_SESSION_NAME="temp-${AWS_ENV}-${ROLE_NAME}-${PROFILE}-session"
 TMP_FILE=".temp_credentials"
-MFA_ENVS=$((python -c 'import os, configparser; c = configparser.ConfigParser(); c.read("{}/.aws/config".format(os.getenv("HOME"))); print(c["default"]["mfa_environments"]);') 2>&1)
+MFA_ENVS=$((python -c "import os, configparser; c = configparser.ConfigParser(); c.read(\"{}/.aws/config\".format(os.getenv(\"HOME\"))); print(c[\"$PROFILE\"][\"mfa_environments\"]);") 2>&1)
 
 if grep -q $AWS_ENV <<<$MFA_ENVS; then
-  MFA_ARN=$((python -c 'import os, configparser; c = configparser.ConfigParser(); c.read("{}/.aws/credentials".format(os.getenv("HOME"))); print(c["default"]["mfa_device"]);') 2>&1)
+  MFA_ARN=$((python -c "import os, configparser; c = configparser.ConfigParser(); c.read(\"{}/.aws/credentials\".format(os.getenv(\"HOME\"))); print(c[\"$PROFILE\"][\"mfa_device\"]);") 2>&1)
   read -s -p "MFA token: " MFA_TOKEN
   MFA_STRING="--serial-number $MFA_ARN --token-code $MFA_TOKEN"
 fi
@@ -49,7 +49,7 @@ fi
 # Run assume-role CLI command
 # ---
 
-ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROLE} --role-session-name ${ROLE_SESSION_NAME} $MFA_STRING $PROFILE > ${TMP_FILE}) 2>&1)
+ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROLE} --role-session-name ${ROLE_SESSION_NAME} $MFA_STRING --profile $PROFILE > ${TMP_FILE}) 2>&1)
 
 if [ $? -eq 0 ]
 then
