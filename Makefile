@@ -10,11 +10,7 @@ build-image:
 build-image-local:
 	@docker build -t vidsyhq/${REPONAME}:local .
 
-check-version:
-	@echo "=> Checking if VERSION exists as Git tag..."
-	(! git rev-list ${VERSION})
-
-deploy:
+push-to-docker-hub:
 	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
 	@docker tag vidsyhq/${REPONAME}:latest vidsyhq/${REPONAME}:${CIRCLE_TAG}
 	@docker push vidsyhq/${REPONAME}:${CIRCLE_TAG}
