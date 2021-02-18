@@ -37,10 +37,10 @@ fi
 ASSUME_ROLE="arn:aws:iam::${ACCOUNT_ID}:role/${ROLE_NAME}"
 ROLE_SESSION_NAME="temp-${AWS_ENV}-${ROLE_NAME}-${PROFILE}-session"
 TMP_FILE=".temp_credentials"
-MFA_ENVS=$((python -c "import os, configparser; c = configparser.ConfigParser(); c.read(\"{}/.aws/config\".format(os.getenv(\"HOME\"))); print(c[$PROFILE][\"mfa_environments\"]);") 2>&1)
+MFA_ENVS=$((python -c "import os, configparser; c = configparser.ConfigParser(); c.read(\"{}/.aws/config\".format(os.getenv(\"HOME\"))); print(c[\"$PROFILE\"][\"mfa_environments\"]);") 2>&1)
 
 if grep -q $AWS_ENV <<<$MFA_ENVS; then
-  MFA_ARN=$((python -c 'import os, configparser; c = configparser.ConfigParser(); c.read("{}/.aws/credentials".format(os.getenv("HOME"))); print(c["$PROFILE"]["mfa_device"]);') 2>&1)
+  MFA_ARN=$((python -c "import os, configparser; c = configparser.ConfigParser(); c.read(\"{}/.aws/credentials\".format(os.getenv(\"HOME\"))); print(c[\"$PROFILE\"][\"mfa_device\"]);") 2>&1)
   read -s -p "MFA token: " MFA_TOKEN
   MFA_STRING="--serial-number $MFA_ARN --token-code $MFA_TOKEN"
 fi
