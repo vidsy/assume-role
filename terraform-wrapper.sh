@@ -7,7 +7,7 @@ if [ "$TIME_LEFT" -lt "0" ]; then
 fi
 
 case $1 in
-plan|apply|destroy|refresh)
+plan|apply|destroy|refresh|import)
 
   if [ -z "$VAR_FILE" ]; then
     VAR_FILE="-var-file=$AWS_ENV.tfvars"
