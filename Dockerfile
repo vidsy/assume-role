@@ -26,7 +26,7 @@ RUN curl -L -o /tmp/docker-${DOCKER_VERSION}.tgz https://download.docker.com/lin
 RUN tar -xz -C /tmp -f /tmp/docker-${DOCKER_VERSION}.tgz
 RUN mv /tmp/docker/* /usr/bin
 
-RUN gem install aws-sdk --no-rdoc -v "~> ${AWS_SDK_VERSION}"
+RUN gem install aws-sdk -v "~> ${AWS_SDK_VERSION}"
 
 ADD assume-role.sh /usr/local/bin/assume-role
 RUN chmod u+x /usr/local/bin/assume-role
