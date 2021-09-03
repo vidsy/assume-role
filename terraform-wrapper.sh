@@ -7,7 +7,7 @@ if [ "$TIME_LEFT" -lt "0" ]; then
 fi
 
 case $1 in
-plan|apply|destroy|refresh|import)
+plan|apply|destroy|refresh)
 
   if [ -z "$VAR_FILE" ]; then
     VAR_FILE="-var-file=$AWS_ENV.tfvars"
@@ -16,7 +16,6 @@ plan|apply|destroy|refresh|import)
       VAR_FILE=""
     fi
   fi
-
 
   if [ -z "$STATE_FILE" ]; then
     STATE_FILE="${PWD##*/}"
@@ -32,5 +31,14 @@ plan|apply|destroy|refresh|import)
   ;;
 *)
   terraform.real $@
+  ;;
+import)
+  if [ -z "$VAR_FILE" ]; then
+    VAR_FILE="-var-file=$AWS_ENV.tfvars"
+
+    if [ ! -f $AWS_ENV.tfvars ]; then
+      VAR_FILE=""
+    fi
+  fi
   ;;
 esac

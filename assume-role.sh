@@ -20,6 +20,7 @@ export ACCOUNT_ID=$1
 export ROLE_NAME=$2
 export AWS_ENV="$3"
 export PROFILE="default"
+export DURATION=14400 # 4 hours
 
 # ---
 # Set profile if exists
@@ -49,7 +50,7 @@ fi
 # Run assume-role CLI command
 # ---
 
-ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROLE} --role-session-name ${ROLE_SESSION_NAME} $MFA_STRING --profile $PROFILE > ${TMP_FILE}) 2>&1)
+ASSUMED_ROLE_OUTPUT=$((aws sts assume-role --output json --role-arn ${ASSUME_ROLE} --role-session-name ${ROLE_SESSION_NAME} $MFA_STRING --profile $PROFILE --duration-seconds $DURATION > ${TMP_FILE}) 2>&1)
 
 if [ $? -eq 0 ]
 then
