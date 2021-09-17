@@ -20,7 +20,14 @@ export ACCOUNT_ID=$1
 export ROLE_NAME=$2
 export AWS_ENV="$3"
 export PROFILE="default"
-export DURATION=14400 # 4 hours
+export DURATION=3600 # 1 hour
+
+# ---
+# Extend role duration is Admin role in staging.
+# ---
+if [ "$ROLE_NAME" == "Admin" ] && [ "$AWS_ENV" == "staging" ]; then
+  export DURATION=14400 # 4 hours
+fi
 
 # ---
 # Set profile if exists
