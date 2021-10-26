@@ -19,8 +19,11 @@ function var_file_path() {
 VAR_FILE="$(var_file_path)"
 
 case $1 in
-plan|apply|destroy|refresh|import)
+plan|apply|destroy|refresh)
   terraform.real $@ $VAR_FILE
+  ;;
+import)
+  terraform.real import $VAR_FILE ${@:2}
   ;;
 init)
   rm -rf .terraform/terraform.tfstate*
