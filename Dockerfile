@@ -6,8 +6,11 @@ ENV TF_VERSION 0.13.7
 ENV AWS_SDK_VERSION 2
 ENV DOCKER_VERSION 18.03.1-ce
 ENV JQ_VERSION 1.6
+ENV TF_PLUGIN_CACHE_DIR="/root/.cache/.terraform.d/plugin-cache"
 
 RUN pip install awscli==${AWS_CLI_VERSION}
+
+RUN mkdir -p ${TF_PLUGIN_CACHE_DIR}
 
 RUN apt-get update
 RUN apt-get install -y zip curl ruby make
